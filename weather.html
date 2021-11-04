@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Greenville weather</title>
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+    <script type="module">
+        console.log("test")
+        const response = await fetch('http://api.weatherapi.com/v1/current.json?key=fdefc3c98341469f8c5233016210311&q=29607&aqi=no')
+
+        const {current, location} = await response.json();
+
+        const text = `${location.name} is currently ${current.temp_f}F`
+        const root = document.getElementById('root')
+        const div = document.createElement('div')
+        div.textContent = text
+        root.appendChild(div)
+    </script>
+</html>

@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Covid in SC</script></title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script type="module">
+    console.log("start");
+    let response = await fetch(
+      "https://api.covidactnow.org/v2/state/SC.json?apiKey=3788831276ad4e608dadf1785312b2b6"
+    );
+    const { actuals } = await response.json();
+
+    response = await fetch(
+      "https://api.covidactnow.org/v2/state/SC.timeseries.json?apiKey=3788831276ad4e608dadf1785312b2b6"
+    );
+    const { actualsTimeseries } = await response.json();
+    const numDays = 7;
+    const actualsTimeseriesTail = actualsTimeseries.slice(numDays * -2); //keep twice as many as we need, just for healthy margin
+    const newCases = actualsTimeseriesTail
+      .filter((actual) => actual.newCases != null)
+      .map((actual) => actual.newCases)
+      .slice(-numDays)
+      .reduce((prevValue, currValue) => prevValue + currValue, 0);
+
+    const sevenDayAvg = Math.round(newCases / numDays)
+    console.log(`SC Covid new infections ${actuals.newCases} `);
+    console.log(`      seven day average ${sevenDayAvg}`);
+
+    const root = document.getElementById('root');
+    let div = document.createElement('div');
+    div.textContent = `SC Covid new infections ${actuals.newCases} `;
+    root.appendChild(div);
+
+    div = document.createElement('div')
+    div.textContent = `      seven day average ${sevenDayAvg}`;
+    root.appendChild(div);
+  </script>
+</html>
